@@ -11,13 +11,15 @@ import {
 } from '@mastra/observability';
 
 import { discordAgent } from './agents/discord-agent'
+import { dayAgent } from './agents/day-agent'
+import { todayTool } from './tools/today'
 
 export const mastra = new Mastra({
   bundler: {
     externals: ['@duckdb/node-bindings'],
   },
-  agents: { discordAgent },
-  tools: {},
+  agents: { discordAgent, dayAgent },
+  tools: { todayTool },
   storage: new MastraCompositeStore({
     id: 'composite-storage',
     default: new MySQLStore({
