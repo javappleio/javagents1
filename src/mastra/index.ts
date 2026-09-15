@@ -1,5 +1,7 @@
 import { Mastra } from '@mastra/core/mastra';
+import { MastraCompositeStore } from '@mastra/core/storage';
 import { MySQLStore } from '@mastra/mysql'
+import { DuckDBStore } from '@mastra/duckdb'
 import { MastraEditor } from '@mastra/editor'
 import {
   MastraStorageExporter,
@@ -16,9 +18,15 @@ export const mastra = new Mastra({
   },
   agents: { discordAgent },
   tools: {},
-  storage: new MySQLStore({
-    id: 'mysql-storage',
-    connectionString: process.env.MYSQL_URL!,
+  storage: new MastraCompositeStore({
+    id: 'composite-storage',
+    default: new MySQLStore({
+      id: 'mysql-storage',
+      connectionString: process.env.MYSQL_URL!,
+    }),
+    domains: {
+      observability: new DuckDBStore({ path: './mastra-observability.duckdb' }).observability,
+    },
   }),
   editor: new MastraEditor(),
   observability: new Observability({
